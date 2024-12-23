@@ -2,17 +2,33 @@ version: '3.8'
 
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "postgresql://postgres:test@db:5432/scroll_db"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: >
+      bash -c "rm -f tmp/pids/server.pid &&
+      bundle exec rails db:create db:migrate &&
+      bundle exec rails server -b 0.0.0.0"
   db:
     image: postgres:15
     container_name: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5444:5432"
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: my_rails_app_development
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: scroll_db
 
 
 volumes:
