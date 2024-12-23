@@ -8,7 +8,7 @@ primary_region = 'atl'
 console_command = '/rails/bin/rails console'
 
 [env]
-  PORT = '8080'
+  RAILS_PORT = '8080'
 
 [build]
 
