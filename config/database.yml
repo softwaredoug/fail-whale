@@ -8,10 +8,7 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: postgres
-  password: password
-  host: localhost
-  port: 5444
+  url: <%= ENV["DATABASE_URL"] %>
 
 development:
   <<: *default
