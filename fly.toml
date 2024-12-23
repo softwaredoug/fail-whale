@@ -7,6 +7,9 @@ app = 'scroll-q6slxw'
 primary_region = 'atl'
 console_command = '/rails/bin/rails console'
 
+[env]
+  PORT = '8080'
+
 [build]
 
 [http_service]
