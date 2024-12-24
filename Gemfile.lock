@@ -147,6 +147,9 @@ GEM
       thor (~> 1.3)
       zeitwerk (>= 2.6.18, < 3.0)
     language_server-protocol (3.17.0.3)
+    liquid (5.6.0)
+      bigdecimal
+      strscan
     logger (1.6.4)
     loofah (2.23.1)
       crass (~> 1.0.2)
@@ -323,6 +326,7 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.2)
+    strscan (3.1.2)
     thor (1.3.2)
     thruster (0.1.9)
     thruster (0.1.9-aarch64-linux)
@@ -372,6 +376,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
+  liquid
   pg
   propshaft
   puma (>= 5.0)

@@ -1,0 +1,9 @@
+<h1>Welcome to My Rails App!</h1>
+
+{% if user_signed_in %}
+  <p>Hello, {{ current_user_email }}!</p>
+  <a href="{{ destroy_user_session_path }}" data-method="delete">Logout</a>
+{% else %}
+  <a href="{{ new_user_registration_path }}">Sign Up</a> |
+  <a href="{{ new_user_session_path }}">Login</a>
+{% endif %}

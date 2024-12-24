@@ -1,7 +1,9 @@
 source "https://rubygems.org"
 
-gem 'pg'
-gem 'devise'
+gem "pg"
+gem "devise"
+# gem 'bootstrap-sass'
+gem "liquid"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.1"
