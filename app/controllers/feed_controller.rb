@@ -2,6 +2,7 @@ class FeedController < ApplicationController
   def initialize
     @chatgpt = Chatgpt.new
     @offset = 0
+    super
   end
 
   def index
