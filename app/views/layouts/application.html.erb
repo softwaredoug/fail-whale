@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -32,19 +32,32 @@
     <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
   </head>
   <body>
-    <header>
-      <nav>
-        <% if user_signed_in? %>
-          <%= link_to 'Home', root_path %> |
-          <%= link_to 'Edit Profile', edit_user_registration_path %> |
-          <%= link_to 'Logout', destroy_user_session_path, method: :delete %>
-        <% else %>
-          <%= link_to 'Home', root_path %> |
-          <%= link_to 'Sign Up', new_user_registration_path %> |
-          <%= link_to 'Login', new_user_session_path %>
-        <% end %>
-      </nav>
-    </header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item-lg-3">
+              <%= link_to 'Home', root_path, :class=>'nav-link'  %>
+            </li>
+            <% if user_signed_in? %>
+              <li class="nav-item-lg-3">
+                <%= link_to ' Edit Profile ', edit_user_registration_path, :class=>'nav-link' %>
+              </li>
+              <li class="nav-item-lg-3">
+                <%= link_to ' Logout ', destroy_user_session_path, method: :delete, :class=>'nav-link' %>
+              </li>
+            <% else %>
+              <li class="nav-item-lg-3">
+                <%= link_to ' Sign Up ', new_user_registration_path, :class=>'nav-link' %>
+              </li>
+              <li class="nav-item-lg-3">
+                <%= link_to ' Login ', new_user_session_path, :class=>'nav-link' %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
     <%= yield %>
 
