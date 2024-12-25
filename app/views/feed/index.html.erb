@@ -15,8 +15,9 @@
           <% @posts.each do |post| %>
             <div class="card mb-3">
               <div class="card-body">
-                <%= image_tag "avatar.png", alt: "User Avatar", class: "rounded-circle float-start me-3", style: "width: 50px; height: 50px;" %>
-                <h6 class="card-title">@user1</h6>
+                <%= image_tag "avatar.png", alt: "User Avatar", 
+                  class: "rounded-circle float-start me-3", style: "width: 50px; height: 50px;" %>
+                <h6 class="card-title">@<%= post[:user] %></h6>
                 <p class="card-text"><%= post[:content] %></p>
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-link">Like</button>
@@ -26,6 +27,9 @@
                 </div>
             </div>
           <% end %>
+          <button class="btn btn-primary">
+            <a href="/feed/index?offset=<%= @next_offset %>" style="color: white; text-decoration: none;">Load More</a>
+          </button>
         </div>
     </div>
 </div>
