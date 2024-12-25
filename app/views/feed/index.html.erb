@@ -17,7 +17,7 @@
               <div class="card-body">
                 <%= image_tag "avatar.png", alt: "User Avatar", 
                   class: "rounded-circle float-start me-3", style: "width: 50px; height: 50px;" %>
-                <h6 class="card-title">@<%= post[:user] %></h6>
+                <h6 class="card-title"><%= post[:username] %></h6>
                 <p class="card-text"><%= post[:content] %></p>
                 <div class="d-flex justify-content-between">
                     <button class="btn btn-link">Like</button>

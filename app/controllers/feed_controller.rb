@@ -1,12 +1,12 @@
 class FeedController < ApplicationController
+  def initialize
+    @chatgpt = Chatgpt.new
+    @offset = 0
+  end
+
   def index
-    @offset = params[:offset] || 10
-    @posts = []
+    @posts = @chatgpt.tweets(5)
     puts "Offset: #{@offset}"
-    @offset.to_i.times do |i|
-      @posts.push({ user: "user#{i}", content: "This is post number #{i}",
-                    scroll_posn: i })
-    end
-  @next_offset = @offset.to_i + 10
+    @next_offset = @offset.to_i + 10
   end
 end
