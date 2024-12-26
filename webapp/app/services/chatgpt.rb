@@ -21,7 +21,7 @@ class Chatgpt
         model: "gpt-4", # Use the desired OpenAI model
         messages: [ { role: "user", content: prompt } ],
         max_tokens: 500,
-        temperature: 0.7
+        stop: "\n"
       }
     )
     content = response.dig("choices", 0, "message", "content")
@@ -32,7 +32,7 @@ class Chatgpt
     if resp.is_a?(Array) && resp.all?
       resp.each do |item|
         if item.is_a?(Hash) && item.key?("content") && item.key?("username")
-        resp_array << item.transform_keys(&:to_sym)
+          resp_array << item.transform_keys(&:to_sym)
         end
       end
     end

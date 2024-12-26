@@ -12,31 +12,26 @@ default: &default
 
 development:
   <<: *default
-  database: scroll
+  url: "postgresql://postgres:test@localhost:5444/scroll_db"
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: scroll_test
+  url: "postgresql://postgres:test@localhost:5444/scroll_test"
 
 
-# Store production database in the storage/ directory, which by default
-# is mounted as a persistent Docker volume in config/deploy.yml.
 production:
   primary:
     <<: *default
-    database: storage/production.sqlite3
+    database: scroll
   cache:
     <<: *default
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
+    database: scroll_cache
   queue:
     <<: *default
-    database: storage/production_queue.sqlite3
-    migrations_paths: db/queue_migrate
+    database: scroll_queue
   cable:
     <<: *default
-    database: storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate
+    database: scroll_cable

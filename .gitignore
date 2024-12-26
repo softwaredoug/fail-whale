@@ -5,31 +5,32 @@
 # `$XDG_CONFIG_HOME/git/ignore` or `~/.config/git/ignore`
 
 # Ignore bundler config.
-/.bundle
+/webapp/.bundle
 
 # Ignore all environment files.
-/.env*
+/webapp/.env*
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+/webapp/log/*
+/webapp/tmp/*
+!/webapp/log/.keep
+!/webapp/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/tmp/pids/*
-!/tmp/pids/
-!/tmp/pids/.keep
+/webapp/tmp/pids/*
+!/webapp/tmp/pids/
+!/webapp/tmp/pids/.keep
 
 # Ignore storage (uploaded files in development and any SQLite databases).
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/
-!/tmp/storage/.keep
+/webapp/storage/*
+!/webapp/storage/.keep
+/webapp/tmp/storage/*
+!/webapp/tmp/storage/
+!/webapp/tmp/storage/.keep
 
-/public/assets
+/webapp/public/assets
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+/webapp/config/master.key
 .nvimrc
+/webapp/.byebug_history

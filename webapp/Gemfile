@@ -58,10 +58,13 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  gem "byebug"
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "minitest"
   gem "capybara"
   gem "selenium-webdriver"
+  gem "byebug"
 end
