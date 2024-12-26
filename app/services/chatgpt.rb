@@ -13,7 +13,7 @@ class Chatgpt
       Generate #{n} unique and creative tweets. Each tweet should include:
       - The content of the tweet
       - A fictional username (@username format)
-      Return the tweets as a Ruby array of hashes with keys: `:content` and `:username`.
+      Return the tweets as a JSON array of objects, each with a "content" and "username" field.
     PROMPT
 
     response = @client.chat(
@@ -25,7 +25,17 @@ class Chatgpt
       }
     )
     content = response.dig("choices", 0, "message", "content")
-    # Attempt to get as array
-    eval(content)
+    # Attempt to get as array of hashes
+    puts content
+    resp = JSON.parse(content)
+    resp_array = []
+    if resp.is_a?(Array) && resp.all?
+      resp.each do |item|
+        if item.is_a?(Hash) && item.key?("content") && item.key?("username")
+        resp_array << item.transform_keys(&:to_sym)
+        end
+      end
+    end
+    resp_array
   end
 end

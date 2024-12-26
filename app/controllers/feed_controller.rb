@@ -6,7 +6,8 @@ class FeedController < ApplicationController
   end
 
   def index
-    @posts = @chatgpt.tweets(5)
+    @offset = params[:offset] || 0
+    @posts = @chatgpt.tweets(10 + @offset.to_i)
     puts "Offset: #{@offset}"
     @next_offset = @offset.to_i + 10
   end
