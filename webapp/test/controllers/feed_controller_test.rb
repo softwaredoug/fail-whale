@@ -8,7 +8,7 @@ class FeedControllerTest < ActionDispatch::IntegrationTest
       tweets.push({ content: "Tweet #{i}", username: "@user#{i}" })
     end
     @mock_chatgpt = Minitest::Mock.new
-    @mock_chatgpt.expect(:tweets, tweets, [10])
+    @mock_chatgpt.expect(:tweets, tweets, [ 10 ])
   end
   test "should get index" do
     Chatgpt.stub(:new, @mock_chatgpt) do
