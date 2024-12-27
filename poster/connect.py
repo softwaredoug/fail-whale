@@ -15,4 +15,5 @@ def connect(database_url: str) -> Engine:
         raise ValueError(f"Unsupported database URL: {database_url}. Please only pass standard postgres:// URLs.")
     logger.info(f"Connecting to database: {database_url}")
     engine = create_engine(database_url)
+    engine.connect()
     return engine

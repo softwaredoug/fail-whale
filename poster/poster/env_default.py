@@ -7,8 +7,8 @@ import os
 class EnvDefault(argparse.Action):
     def __init__(self,
                  envvar: str,
-                 required:bool=True,
-                 default:Optional[str]=None,
+                 required: bool = True,
+                 default: Optional[str] = None,
                  **kwargs: Any) -> None:
         if envvar:
             if envvar in os.environ:
@@ -20,4 +20,3 @@ class EnvDefault(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values)
-

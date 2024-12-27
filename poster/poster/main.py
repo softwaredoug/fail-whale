@@ -1,15 +1,17 @@
-import os
 import argparse
 import logging
 import sys
 
+from openai import OpenAI
+
 import sqlalchemy
-from sqlalchemy import create_engine, MetaData, Table, inspect, delete
+from sqlalchemy import MetaData, delete
 from sqlalchemy.orm import sessionmaker
 
 from poster.env_default import EnvDefault
 from poster.connect import connect
 from poster.post import Post
+from poster.post_generator import post_generator
 
 
 logger = logging.getLogger(__name__)
@@ -62,32 +64,28 @@ def parse_args() -> argparse.Namespace:
 def drop_all_posts(engine):
     metadata = MetaData()
     metadata.reflect(bind=engine)
-    with engine.connect() as connection:
-        with sessionmaker(bind=engine)() as session:
-            session.execute(delete(Post))
-            session.commit()
-            logger.info("All posts deleted.")
+    with sessionmaker(bind=engine)() as session:
+        session.execute(delete(Post))
+        session.commit()
+        logger.info("All posts deleted.")
 
 
 def main():
     args = parse_args()
     engine = connect(args.database_url)
+    client = OpenAI(api_key=args.openai_api_key)
     if args.drop:
         drop_all_posts(engine)
     # Dump users
     metadata = MetaData()
     metadata.reflect(bind=engine)
     with sessionmaker(bind=engine)() as session:
-        for i in range(10):
-            new_post = Post(content=f"Hello, world! {i}", username=f"test{i}",
+        for gpt_post in post_generator(openai=client, topic=args.topic):
+            new_post = Post(content=gpt_post['content'], username=gpt_post['username'],
                             created_at=sqlalchemy.sql.func.now(), updated_at=sqlalchemy.sql.func.now())
             session.add(new_post)
             session.commit()
             # Insert seed posts
-
-
-
-
 
 
 if __name__ == "__main__":
