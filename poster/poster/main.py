@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 from poster.env_default import EnvDefault
 from poster.connect import connect
+from poster.post import Post
 
 
 def parse_args() -> argparse.Namespace:
@@ -28,6 +29,11 @@ def parse_args() -> argparse.Namespace:
         required=True,
         help="OpenAI API key (overrides OPENAI_API_KEY environment variable)",
     )
+    parser.add_argument(
+        "--topic",
+        type=str,
+        help="Topic to generate posts about",
+    )
     return parser.parse_args()
 
 
@@ -37,12 +43,16 @@ def main():
     # Dump users
     metadata = MetaData()
     metadata.reflect(bind=engine)
-    session = sessionmaker(bind=engine)()
-    user_table = metadata.tables["users"]
-    users = session.query(user_table).all()
-    for user in users:
-        print(user)
-    session.close()
+    with sessionmaker(bind=engine)() as session:
+        for i in range(10):
+            new_post = Post(content=f"Hello, world! {i}", username="test{i}",
+                            created_at=sqlalchemy.sql.func.now(), updated_at=sqlalchemy.sql.func.now())
+            session.add(new_post)
+            session.commit()
+            # Insert seed posts
+
+
+
 
 
 
