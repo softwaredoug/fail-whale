@@ -4,17 +4,17 @@ import sys
 
 from openai import OpenAI
 
-import sqlalchemy
 from sqlalchemy import MetaData, delete
 from sqlalchemy.orm import sessionmaker
 
 from poster.env_default import EnvDefault
 from poster.connect import connect
-from poster.post import Post
-from poster.post_generator import post_generator
+from poster.models.post import Post
+from poster.loop.loop import loop
+from poster.providers import OpenAiNewPostProvider, SqlUserFeedProvider
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("poster")
 logger.setLevel(logging.DEBUG)
 
 stdout_handler = logging.StreamHandler(sys.stdout)
@@ -76,16 +76,11 @@ def main():
     client = OpenAI(api_key=args.openai_api_key)
     if args.drop:
         drop_all_posts(engine)
-    # Dump users
-    metadata = MetaData()
-    metadata.reflect(bind=engine)
-    with sessionmaker(bind=engine)() as session:
-        for gpt_post in post_generator(openai=client, topic=args.topic):
-            new_post = Post(content=gpt_post['content'], username=gpt_post['username'],
-                            created_at=sqlalchemy.sql.func.now(), updated_at=sqlalchemy.sql.func.now())
-            session.add(new_post)
-            session.commit()
-            # Insert seed posts
+
+    feed_provider = SqlUserFeedProvider(engine)
+    post_provider = OpenAiNewPostProvider(client)
+
+    loop(feed_provider, post_provider, usernames=["alice", "bob", "charlie"])
 
 
 if __name__ == "__main__":

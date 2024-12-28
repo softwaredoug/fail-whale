@@ -1,20 +1,20 @@
 [tool.poetry]
 name = "poster"
 version = "0.1.0"
-description = "Post to scroll's twitter database from OpenAI"
-authors = ["Doug Turnbull <doug@dahlialabs.ai>"]
+description = "Fake social media simulator"
+authors = ["Doug Turnbull <softwaredoug@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
 openai = "^1.58.1"
 sqlalchemy = "^2.0.36"
-sqlalchemy-stubs = "^0.4"
 psycopg = "^3.2.3"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
+mypy = "^1.14.0"
 
 [build-system]
 requires = ["poetry-core"]
