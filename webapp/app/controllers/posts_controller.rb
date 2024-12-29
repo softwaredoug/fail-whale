@@ -31,6 +31,12 @@ class PostsController < ApplicationController
     @next_limit = @limit + 10
   end
 
+  def like
+    post = Post.find(params[:id])
+    post.increment!(:likes) # Increment the likes count
+    redirect_to posts_path(limit: @limit)
+  end
+
   private
 
   def post_params

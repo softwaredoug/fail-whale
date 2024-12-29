@@ -28,9 +28,7 @@
                 <h6 class="card-title"><%= post[:username] %></h6>
                 <p class="card-text"><%= post[:content] %></p>
                 <div class="d-flex justify-content-between">
-                    <button class="btn btn-link">Like</button>
-                    <button class="btn btn-link">Comment</button>
-                    <button class="btn btn-link">Share</button>
+                  <%= link_to "Like (#{post.likes})", like_post_path(post[:id]), method: :get, class: "btn btn-link" %>
                 </div>
                 </div>
             </div>
