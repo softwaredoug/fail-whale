@@ -1,4 +1,6 @@
 class PostsController < ApplicationController
+  before_action :authenticate_user!
+
   def initialize
     @limit = 10
     @user_post = Post.new
@@ -32,7 +34,7 @@ class PostsController < ApplicationController
   private
 
   def post_params
-    username = "softwaredoug"
+    username = current_user.username
     w_content = params.require(:post).permit(:content)
     w_content[:username] = username
     w_content
