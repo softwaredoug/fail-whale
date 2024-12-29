@@ -15,7 +15,13 @@ class SqlUserFeedProvider(UserFeedProvider):
 
     def user_posts(self, username: str, n: int) -> list[Post]:
         with Session(bind=self.engine) as sess:
-            return sess.query(Post).filter(Post.username == username).limit(n).all()
+            return (sess
+                    .query(Post)
+                    .filter(Post.username == username)
+                    .filter(~Post.content.like("@%"))
+                    .order_by(Post.created_at.desc())
+                    .limit(n).all()
+                    )
 
     def share_post(self, post: Post):
         with Session(bind=self.engine, expire_on_commit=False) as sess:

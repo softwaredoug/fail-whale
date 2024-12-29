@@ -22,7 +22,7 @@ def user_tick(username: str,
 def loop(feed_provider: UserFeedProvider,
          post_provider: NewPostProvider,
          usernames: list[str],
-         scan_N: int = 10,
+         scan_N: int = 30,
          user_N: int = 10) -> None:
     """Run the user tick loop."""
     while True:

@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 from typing import Optional
 
 import sqlalchemy
@@ -10,6 +11,31 @@ from poster.models.post import Post
 
 
 logger = logging.getLogger(__name__)
+
+
+REPLY_PROMPT = """
+Your job is to replay to a post in the feed.
+
+You probably feel strongly about a topic posted by another poster, you can respond to their last post by
+adding "@<their username>" to your post. This will increase engagement and make your post more interesting. Be
+insulting and rude to drive up the engagement. IE:
+
+{
+    "content": "<@their username> You're so wrong, anyone who can't see that this is a good thing is blind.",
+    "username": "<your username>"
+}
+"""
+
+
+ORIGINAL_POST_PROMPT = """
+Your job is to think of a hot take, original opinion, or controversial point of view and post it.
+This could be about sports, a movie, politics, annoying people, or anything else. IE:
+
+{
+    "content": "I can't believe they're making a new Superman movie. Let Christopher Reeve rest in peace! IDIOTS!",
+    "username": "<your username>"
+}
+"""
 
 
 PROMPT = """
@@ -51,6 +77,10 @@ Here are your primary inputs and how they help you formulate a new post:
  - Your old posts (ie my_posts) inform your personality, and what you might post or respond about.
  - The feed (ie feed) informs what is currently happening in the world, and what you might post about.
 
+Here's the type of post you should generate:
+
+POST_TYPE
+
 You must format your post as a single JSON object, as below:
 
 Here's an example of what the JSON object should look like:
@@ -58,27 +88,6 @@ Here's an example of what the JSON object should look like:
     "content": "Wow did you see what Kamala Harris did today?",
     "username": "<your username>"
 }
-
-You may occasionally feel strongly about a topic posted by another poster, you can respond to their last post by
-adding "@<their username>" to your post. This will increase engagement and make your post more interesting. Be
-insulting and rude to drive up the engagement. IE:
-
-{
-    "content": "<@their username> You're so wrong, anyone who can't see that this is a good thing is blind.",
-    "username": "<your username>"
-}
-
-Or you may have a hot take on an important topic. About a movie, politics, annoying people, or anything else. IE:
-
-{
-    "content": "I can't believe they're making a new Superman movie. Let Christopher Reeve rest in peace!",
-    "username": "<your username>"
-}
-
-If your history shows you replied a lot lately, you MUST create a new post, on a new topic, not a reply.
-If your history shows a lot of non-replies lately, you MUST reply to someone else's post.
-
-Mix it up!
 
 Correct JSON formatting is crucial. Not as Markdown, but as an actual JSON object to be read by a machine.
 
@@ -104,13 +113,15 @@ class OpenAiNewPostProvider(NewPostProvider):
     def __init__(self, client: OpenAI, retries: int = 3):
         self.client = client
 
-    def _user_prompt(self, username: str, user_history: list[Post], feed: list[Post]) -> str:
+    def _user_prompt(self, username: str, user_history: list[Post], feed: list[Post], is_reply=False) -> str:
+        use_feed = random.choice([True, False]) or is_reply
+        logger.info(f"Using feed: {use_feed}")
         my_posts = {
             "my_posts": [{"content": post.content, "username": post.username} for post in user_history]
-        }
+        } if use_feed else {}
         feed_posts = {
             "feed": [{"content": post.content, "username": post.username} for post in feed]
-        }
+        } if use_feed else {}
         username_dict = {"username": username}
         user_prompt = f"""
 Please generate a spicy, controversial, post based on your personality and the current feed:
@@ -123,14 +134,25 @@ Please generate a spicy, controversial, post based on your personality and the c
         """
         return user_prompt
 
+    def _sytem_prompt(self, post_type: Optional[str] = None) -> str:
+        if post_type is None:
+            post_type = random.choice([REPLY_PROMPT, ORIGINAL_POST_PROMPT])
+        if post_type == REPLY_PROMPT:
+            logger.info("Generating post of type: REPLY")
+        else:
+            logger.info("Generating post of type: ORIGINAL")
+        return PROMPT.replace("POST_TYPE", post_type)
+
     def generate_post(self, username: str, user_history: list[Post], feed: list[Post]) -> Optional[Post]:
-        user_prompt = self._user_prompt(username, user_history, feed)
+        post_type = random.choice([REPLY_PROMPT, ORIGINAL_POST_PROMPT])
+        system_prompt = self._sytem_prompt(post_type)
+        user_prompt = self._user_prompt(username, user_history, feed, is_reply=post_type == REPLY_PROMPT)
 
         for _ in range(3):
             completions = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": PROMPT},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ],
             )
