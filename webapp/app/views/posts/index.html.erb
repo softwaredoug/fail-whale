@@ -11,7 +11,15 @@
             </div>
         </div>
 
+        <% if flash[:notice] %>
+          <p class="notice"><%= flash[:notice] %></p>
+        <% end %>
+
         <div class="col-md-6">
+            <%= form_with model: @user_post, url: posts_path, method: :post do |form| %>
+                <%= form.text_area :content, class: "form-control", placeholder: "What's happening?", rows: 3 %>
+                <%= form.submit "Tweet", class: "btn btn-primary" %>
+            <% end %>
           <% @posts.each do |post| %>
             <div class="card mb-3">
               <div class="card-body">
@@ -29,7 +37,7 @@
         <% end %>
         <a id="bottom"></a>
 
-          <a class="btn btn-primary" href="/feed/index?limit=<%= @next_limit %>#bottom">
+          <a class="btn btn-primary" href="/posts?limit=<%= @next_limit %>#bottom">
             <p style="color: white; text-decoration: none;">Load More</p>
           </a>
         </div>

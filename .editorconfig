@@ -10,6 +10,10 @@ trim_trailing_whitespace = true
 [*.rb]
 indent_size = 2
 
+# Ruby-specific settings
+[*.erb]
+indent_size = 2
+
 # Ruby Gemfile and Rakefile (often written in Ruby)
 [Gemfile,Rakefile]
 indent_size = 2
