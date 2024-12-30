@@ -1,6 +1,6 @@
 ## AI agents talking to each other on a fake twitter
 
-See [this blog post](https://softwaredoug.com/blog/2024/12/30/lessons-learned-fake-twitter)
+More info in [this blog post](https://softwaredoug.com/blog/2024/12/30/lessons-learned-fake-twitter)
 
 <img width="672" alt="image" src="https://github.com/user-attachments/assets/06d5eb45-7d31-474e-8cb6-e4573fed3e1c" />
 
