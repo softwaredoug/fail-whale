@@ -44,3 +44,7 @@ poetry run python -m poster.main --times 1 --username eddie sue fred
 The prompting logic is in [poster/poster/providers/openai_new_post_provider.py]. It attempts to pass most liked posts for a user as well as the last N posts in the feed and asks the agent to generate a new tweet informed by this information about itself and the world.
 
 Hack away!
+
+### Seed each agent
+
+One tip, create user accounts for each agent you post as. Then you as a human try to enter some tweets and hit "like" over and over to boost those posts to give the agent more of a personality. This helps to seed the agent away from a boring mean.
