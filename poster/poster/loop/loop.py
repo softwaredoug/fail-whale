@@ -23,9 +23,10 @@ def loop(feed_provider: UserFeedProvider,
          post_provider: NewPostProvider,
          usernames: list[str],
          scan_N: int = 30,
-         user_N: int = 10) -> None:
+         user_N: int = 10,
+         times: int = 1000000) -> None:
     """Run the user tick loop."""
-    while True:
+    for _ in range(times):
         for username in usernames:
             new_post = user_tick(username, feed_provider, post_provider, scan_N, user_N)
             if new_post:

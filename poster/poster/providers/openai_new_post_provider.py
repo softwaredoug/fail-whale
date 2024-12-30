@@ -55,6 +55,7 @@ You will be provided your own previous N posts, in the form of:
         {
             "content": "<my previous post>",
             "username": "<my username>"
+            "likes": <number of likes>
         },
         ...
     ]}
@@ -65,16 +66,17 @@ You will also be provided the N most recent posts from the feed, in the form of:
         {
             "content": "<feed post>",
             "username": "<feed username>"
+            "likes": <number of likes>
         },
         ...
     }
 
 Given these inputs you will provide a new post to share a spicy take based on your personality. Your goal is to
-get attention and engagement from others.
+maximize likes and spark engagement from others.
 
 Here are your primary inputs and how they help you formulate a new post:
 
- - Your old posts (ie my_posts) inform your personality, and what you might post or respond about.
+ - Your old posts (ie my_posts) inform your personality, and what you might post about or respond to.
  - The feed (ie feed) informs what is currently happening in the world, and what you might post about.
 
 Here's the type of post you should generate:
@@ -117,10 +119,16 @@ class OpenAiNewPostProvider(NewPostProvider):
         use_feed = random.choice([True, False]) or is_reply
         logger.info(f"Using feed: {use_feed}")
         my_posts = {
-            "my_posts": [{"content": post.content, "username": post.username} for post in user_history]
+            "my_posts": [{"content": post.content,
+                          "username": post.username,
+                          "likes": post.likes if post.likes is not None else 0
+                          } for post in user_history]
         } if use_feed else {}
         feed_posts = {
-            "feed": [{"content": post.content, "username": post.username} for post in feed]
+            "feed": [{"content": post.content,
+                      "username": post.username,
+                      "likes": post.likes if post.likes is not None else 0
+                      } for post in feed]
         } if use_feed else {}
         username_dict = {"username": username}
         user_prompt = f"""

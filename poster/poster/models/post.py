@@ -12,6 +12,7 @@ class Post(Base):
     id = Column(Integer, primary_key=True)
     content = Column(String)
     username = Column(String)
+    likes = Column(Integer, nullable=True)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 

@@ -58,6 +58,19 @@ def parse_args() -> argparse.Namespace:
         type=str,
         help="Topic to generate posts about",
     )
+    parser.add_argument(
+        "--times",
+        type=int,
+        default=1,
+        help="Number of times to run the loop per user",
+    )
+    parser.add_argument(
+        "--username",
+        nargs="+",
+        required=True,
+        type=str,
+        help="Usernames to generate posts for",
+    )
     return parser.parse_args()
 
 
@@ -80,7 +93,8 @@ def main():
     feed_provider = SqlUserFeedProvider(engine)
     post_provider = OpenAiNewPostProvider(client)
 
-    loop(feed_provider, post_provider, usernames=["alice", "bob", "charlie"])
+    loop(feed_provider, post_provider, usernames=args.username,
+         times=args.times * len(args.username))
 
 
 if __name__ == "__main__":
