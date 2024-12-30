@@ -15,7 +15,7 @@ def user_tick(username: str,
               user_N: int = 10) -> Optional[Post]:
     """Generate a new post for the user and add it to the feed."""
     my_posts = feed_provider.user_posts(username, user_N)
-    feed = feed_provider.most_recent(scan_N)
+    feed = feed_provider.most_recent(username, scan_N)
     return post_provider.generate_post(username, user_history=my_posts, feed=feed)
 
 

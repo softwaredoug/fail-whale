@@ -3,8 +3,8 @@ from poster.models.post import Post
 
 
 class UserFeedProvider(Protocol):
-    def most_recent(self, n: int) -> list[Post]:
-        """Return the n most recent posts."""
+    def most_recent(self, username: str, n: int) -> list[Post]:
+        """Return the n most recent posts not from this user."""
         ...
 
     def user_posts(self, username: str, n: int) -> list[Post]:

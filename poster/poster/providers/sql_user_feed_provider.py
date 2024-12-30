@@ -9,10 +9,11 @@ class SqlUserFeedProvider(UserFeedProvider):
     def __init__(self, engine: Engine):
         self.engine = engine
 
-    def most_recent(self, n: int) -> list[Post]:
+    def most_recent(self, username: str, n: int) -> list[Post]:
         with Session(bind=self.engine) as sess:
             return (
                 sess.query(Post)
+                    .filter(Post.username != username)
                     .order_by(Post.created_at.desc())
                     .limit(n)
                     .all()

@@ -71,6 +71,24 @@ def parse_args() -> argparse.Namespace:
         type=str,
         help="Usernames to generate posts for",
     )
+    parser.add_argument(
+        "--allow-replies",
+        action="store_true",
+        default=False,
+        help="Allow the model to generate replies",
+    )
+    parser.add_argument(
+        "--see-my-posts",
+        action="store_true",
+        default=False,
+        help="Include user's own posts in the prompt",
+    )
+    parser.add_argument(
+        "--see-feed",
+        action="store_true",
+        default=False,
+        help="Include the feed in the prompt",
+    )
     return parser.parse_args()
 
 
@@ -91,7 +109,10 @@ def main():
         drop_all_posts(engine)
 
     feed_provider = SqlUserFeedProvider(engine)
-    post_provider = OpenAiNewPostProvider(client)
+    post_provider = OpenAiNewPostProvider(client,
+                                          use_my_posts=args.see_my_posts,
+                                          use_feed=args.see_feed,
+                                          allow_replies=args.allow_replies)
 
     loop(feed_provider, post_provider, usernames=args.username,
          times=args.times * len(args.username))

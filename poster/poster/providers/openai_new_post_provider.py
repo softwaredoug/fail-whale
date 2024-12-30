@@ -44,6 +44,7 @@ You're scanning twitter and thinking of a new post, formatted in JSON, to genera
 Format it as a machine-readable JSON object in a string with the following fields:
     - content: the content of the post
     - username: the username of the poster
+    - likes: the number of likes the post has
 
 Your username will be provided as follows:
 
@@ -71,13 +72,19 @@ You will also be provided the N most recent posts from the feed, in the form of:
         ...
     }
 
+You REALLY want likes! You want attention. Maximize posting about things that get lots of likes, in that tone, or
+in a way that will get lots of likes. You want to be controversial, but not so controversial that you get banned.
+
+You REALLY are a human being that wants to have consistent opinions and 'win' the argument. So keep hammering home
+those points of view, generate new similar ones, that are also sure to get lucks. Be original!
+
 Given these inputs you will provide a new post to share a spicy take based on your personality. Your goal is to
 maximize likes and spark engagement from others.
 
 Here are your primary inputs and how they help you formulate a new post:
 
  - Your old posts (ie my_posts) inform your personality, and what you might post about or respond to.
- - The feed (ie feed) informs what is currently happening in the world, and what you might post about.
+ - The feed (ie feed) informs what is currently happening in the world.
 
 Here's the type of post you should generate:
 
@@ -107,32 +114,38 @@ Instead, format it as a bare JSON object as below:
     "username": "<your username>"
 }
 
+Again you really want likes!!! So keep doing what gets likes, but don't get banned. Good luck!
+
 """
 
 
 class OpenAiNewPostProvider(NewPostProvider):
     """Provide new post generation using OpenAI API"""
-    def __init__(self, client: OpenAI, retries: int = 3):
+    def __init__(self, client: OpenAI, retries: int = 3,
+                 use_my_posts=True, use_feed=True, allow_replies=True):
+        self.retries = retries
+        self.use_my_posts = use_my_posts
+        self.use_feed = use_feed
+        self.allow_replies = allow_replies
         self.client = client
 
-    def _user_prompt(self, username: str, user_history: list[Post], feed: list[Post], is_reply=False) -> str:
-        use_feed = random.choice([True, False]) or is_reply
-        logger.info(f"Using feed: {use_feed}")
+    def _user_prompt(self, username: str, user_history: list[Post], feed: list[Post]) -> str:
         my_posts = {
             "my_posts": [{"content": post.content,
                           "username": post.username,
                           "likes": post.likes if post.likes is not None else 0
                           } for post in user_history]
-        } if use_feed else {}
+        } if self.use_my_posts else {'my_posts': []}
         feed_posts = {
             "feed": [{"content": post.content,
                       "username": post.username,
                       "likes": post.likes if post.likes is not None else 0
                       } for post in feed]
-        } if use_feed else {}
+        } if self.use_feed else {'feed': []}
+        logger.info(f"Using {len(my_posts['my_posts'])} user posts and {len(feed_posts['feed'])} feed posts")
         username_dict = {"username": username}
         user_prompt = f"""
-Please generate a spicy, controversial, post based on your personality and the current feed:
+Please generate a spicy, controversial, post based on your posts and the current feed:
 
 {json.dumps(username_dict, indent=4)}
 
@@ -152,9 +165,9 @@ Please generate a spicy, controversial, post based on your personality and the c
         return PROMPT.replace("POST_TYPE", post_type)
 
     def generate_post(self, username: str, user_history: list[Post], feed: list[Post]) -> Optional[Post]:
-        post_type = random.choice([REPLY_PROMPT, ORIGINAL_POST_PROMPT])
+        post_type = random.choice([REPLY_PROMPT, ORIGINAL_POST_PROMPT]) if self.allow_replies else ORIGINAL_POST_PROMPT
         system_prompt = self._sytem_prompt(post_type)
-        user_prompt = self._user_prompt(username, user_history, feed, is_reply=post_type == REPLY_PROMPT)
+        user_prompt = self._user_prompt(username, user_history, feed)
 
         for _ in range(3):
             completions = self.client.chat.completions.create(
